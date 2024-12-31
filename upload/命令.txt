@@ -1,0 +1,13 @@
+pyinstaller -w -F 坐台1.py Visualization2.py
+
+pyinstaller -w -F 5.py camera825.py
+
+C:\Windows\System32
+
+D:\py38\python38.exe -m PyInstaller -w -F plc_visualzation.py Visualization2.py
+
+D:\py6436\python36.exe -m PyInstaller -w -F 坐台9.py Visualization2.py
+
+D:\py6436\python36.exe -m pyinstaller -w -F --add-data "D:/新建文件夹/4/0.jpg;." 1.py Visualization2.py
+
+pyinstaller -w -F 1.py
