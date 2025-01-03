@@ -1,7 +1,14 @@
 package com.weichai.ranqi.entity;
 
-public class User {
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import org.springframework.core.annotation.Order;
 
+import java.util.List;
+
+public class User {
+    @TableId(type = IdType.AUTO)
     // 用户属性
     private Long id; // 用户唯一标识
     private String name; // 用户姓名
@@ -9,6 +16,8 @@ public class User {
     private String phone; // 用户电话
     private String permissions; // 用户权限
 
+    @TableField(exist = false)
+    private List<Safety_Hazard_Form> forms;
     // 构造方法
     public User() {}
 
