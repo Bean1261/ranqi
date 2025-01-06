@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserMapper {
 
     // 插入用户
-    @Insert("INSERT INTO user (name, password, phone, permissions) VALUES (#{name}, #{password}, #{phone}, #{permissions})")
+    @Insert("INSERT INTO user (username, password, phone, permissions) VALUES (#{username}, #{password}, #{phone}, #{permissions})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertUser(User user);
 
@@ -22,7 +22,7 @@ public interface UserMapper {
     List<User> selectAllUsers();
 
     // 更新用户信息
-    @Update("UPDATE user SET name = #{name}, password = #{password}, phone = #{phone}, permissions = #{permissions} WHERE id = #{id}")
+    @Update("UPDATE user SET username = #{username}, password = #{password}, phone = #{phone}, permissions = #{permissions} WHERE id = #{id}")
     int updateUser(User user);
 
     // 根据 ID 删除用户

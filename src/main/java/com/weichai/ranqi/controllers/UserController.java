@@ -1,5 +1,7 @@
 package com.weichai.ranqi.controllers;
 
+import com.weichai.ranqi.utils.JwtUtils;
+import com.weichai.ranqi.utils.Result;
 import com.weichai.ranqi.entity.User;
 import com.weichai.ranqi.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://192.168.205.6:9526", allowCredentials = "true") // 允许跨域
+@CrossOrigin(origins = "https://192.168.54.6:9528", allowCredentials = "true")
 public class UserController {
 
 
@@ -23,39 +25,24 @@ public class UserController {
 
     private static final String MOCK_TOKEN = "mock-token";
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-        // 根据用户名查询数据库
-        User dbUser = userService.getUserById(user.getId());
-        Map<String, Object> response = new HashMap<>();
 
-        if (dbUser != null && dbUser.getPassword().equals(user.getPassword())) {
-            response.put("token", MOCK_TOKEN); // 模拟 token 返回
-            response.put("user", dbUser);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            response.put("message", "用户名或密码错误");
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
+    @PostMapping("/login")
+    public Result login(@RequestBody User user){
+
+        String token = JwtUtils.generateToken(user.getusername());
+        return Result.ok().data("token", token);
     }
+
 
     @GetMapping("/info")
-    public ResponseEntity<Map<String, Object>> getInfo(@RequestParam String token) {
-        Map<String, Object> response = new HashMap<>();
-        if (MOCK_TOKEN.equals(token)) {
-            response.put("roles", new String[]{"admin"}); // 返回模拟角色
-            response.put("name", "admin");
-            response.put("avatar", "https://example.com/avatar.jpg");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            response.put("message", "无效的 Token");
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
+    public Result info(String token){
+        String username = JwtUtils.getClaimsByToken(token).getSubject();
+        String url = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80";
+        return Result.ok().data("name",username).data("avatar", url);
     }
-
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-        return new ResponseEntity<>("退出成功", HttpStatus.OK);
+    public Result logout() {
+        return Result.ok();
     }
     @ApiOperation("获取所有用户")
     @GetMapping
@@ -78,7 +65,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<String> addUser(@RequestBody User user) {
         userService.addUser(user);
-        return new ResponseEntity<>(user.getName() + " 用户添加成功！", HttpStatus.CREATED);  // 返回201
+        return new ResponseEntity<>(user.getusername() + " 用户添加成功！", HttpStatus.CREATED);  // 返回201
     }
 
     @ApiOperation("更新用户信息")

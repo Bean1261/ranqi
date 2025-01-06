@@ -11,7 +11,7 @@ public class User {
     @TableId(type = IdType.AUTO)
     // 用户属性
     private Long id; // 用户唯一标识
-    private String name; // 用户姓名
+    private String username; // 用户姓名
     private String password; // 用户密码
     private String phone; // 用户电话
     private String permissions; // 用户权限
@@ -21,9 +21,9 @@ public class User {
     // 构造方法
     public User() {}
 
-    public User(Long id, String name, String password, String phone, String permissions) {
+    public User(Long id, String username, String password, String phone, String permissions) {
         this.id = id;
-        this.name = name;
+        this.username = username;
         this.password = password;
         this.phone = phone;
         this.permissions = permissions;
@@ -38,12 +38,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getusername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setusername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -75,7 +75,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
                 ", phone='" + phone + '\'' +
                 ", permissions='" + permissions + '\'' +
                 '}';
