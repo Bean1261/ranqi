@@ -21,4 +21,9 @@ public interface UserService {
 
     // 删除用户
     boolean deleteUser(Long id);
+
+    User getUserByUsername(String getusername);
+
+    User getUserByPhoneOrUsername(String phone, String username);
+
 }

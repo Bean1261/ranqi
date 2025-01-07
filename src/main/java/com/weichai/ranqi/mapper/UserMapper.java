@@ -17,6 +17,14 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE id = #{id}")
     User selectUserById(Long id);
 
+    // 根据用户名查询用户
+    @Select("SELECT * FROM user WHERE username = #{username}")
+    User getUserByUsername(String username);
+
+    // 根据手机号查询用户
+    @Select("SELECT * FROM user WHERE phone = #{phone}")
+    User getUserByPhone(String phone);
+
     // 查询所有用户
     @Select("SELECT * FROM user")
     List<User> selectAllUsers();

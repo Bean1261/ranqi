@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,18 +29,36 @@ public class UserController {
 
     @PostMapping("/login")
     public Result login(@RequestBody User user){
+        // 检查用户名和密码是否匹配
+        User dbUser = userService.getUserByUsername(user.getusername());
+        if (dbUser == null || !dbUser.getPassword().equals(user.getPassword())) {
+            return Result.error().message("用户名或密码错误");
+        }
 
-        String token = JwtUtils.generateToken(user.getusername());
+        // 生成 token
+        String token = JwtUtils.generateToken(dbUser.getusername());
         return Result.ok().data("token", token);
     }
 
 
     @GetMapping("/info")
-    public Result info(String token){
+    public Result info(String token) {
+        // 从 token 中解析用户名
         String username = JwtUtils.getClaimsByToken(token).getSubject();
+
+        // 设置默认头像 URL
         String url = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80";
-        return Result.ok().data("name",username).data("avatar", url);
+
+        // 模拟角色信息
+        String roles = "admin";
+
+        // 返回结果
+        return Result.ok()
+                .data("name", username)
+                .data("avatar", url)
+                .data("roles", roles); // 添加 roles 字段
     }
+
     @PostMapping("/logout")
     public Result logout() {
         return Result.ok();
@@ -49,6 +68,21 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> list = userService.getAllUsers();
         return new ResponseEntity<>(list, HttpStatus.OK);  // 返回用户列表
+    }
+
+    @ApiOperation("根据 phone 或 username 查询用户")
+    @GetMapping("/query")
+    public ResponseEntity<User> getUserByPhoneOrUsername(@RequestParam(required = false) String phone,
+                                                         @RequestParam(required = false) String username) {
+        if (phone == null && username == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 如果两个参数都为空，返回 400
+        }
+
+        User user = userService.getUserByPhoneOrUsername(phone, username);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 用户未找到
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @ApiOperation("根据 ID 获取用户")
