@@ -46,11 +46,17 @@ public class UserController {
         // 从 token 中解析用户名
         String username = JwtUtils.getClaimsByToken(token).getSubject();
 
+        // 获取用户信息
+        User user = userService.getUserByUsername(username);
+        if (user == null) {
+            return Result.error().message("用户不存在");
+        }
+
         // 设置默认头像 URL
         String url = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80";
 
         // 模拟角色信息
-        String roles = "admin";
+        String roles = user.getPermissions();
 
         // 返回结果
         return Result.ok()

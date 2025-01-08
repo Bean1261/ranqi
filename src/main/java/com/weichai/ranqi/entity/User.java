@@ -17,7 +17,7 @@ public class User {
     private String permissions; // 用户权限
 
     @TableField(exist = false)
-    private List<Safety_Hazard_Form> forms;
+    private List<Ledger> ledger;
     // 构造方法
     public User() {}
 
