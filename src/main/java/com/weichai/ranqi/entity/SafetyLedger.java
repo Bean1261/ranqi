@@ -1,22 +1,21 @@
 package com.weichai.ranqi.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
-import java.time.LocalDate;
-import java.util.List;
+import javax.persistence.*;
+import java.util.Date;
 
-public class Ledger {
-
+@Data
+@Entity
+@Table(name = "safety_ledger")
+public class SafetyLedger {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String inspectionType;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate checkTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate rectificationDeadline;
-
+    private Date checkTime;
+    private Date rectificationDeadline;
     private String hazardSeverity;
     private String issueCategory;
     private String subCategory;
@@ -28,40 +27,36 @@ public class Ledger {
     private String detailedArea;
     private String issueObject;
     private String issueMode;
-    private Double lValue;
-    private Double eValue;
-    private Double cValue;
-    private Double dValue;
-    private List<String> beforeRectificationPhoto;
+    private Integer lValue;
+    private Integer eValue;
+    private Integer cValue;
+    private Integer dValue;
+
+    @Lob
+    private String beforeRectificationPhotos; // 保存图片路径，以逗号分隔
+
+    @Lob
     private String issueDescription;
     private Boolean isFirstDiscovery;
     private String teamLeader;
     private Double deductionScore;
     private String inspector;
-    private List<String> afterRectificationPhoto;
+
+    @Lob
+    private String afterRectificationPhotos; // 保存图片路径，以逗号分隔
+
+    @Lob
     private String analysisAndMeasures;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate rectificationFinishTime;
-    // JSON 字符串字段
-    private String beforeRectificationPhotoJson; // 用于存储 JSON 字符串
-    private String afterRectificationPhotoJson; // 用于存储 JSON 字符串
+    private Date rectificationFinishTime;
+//
     private String assessmentPerson;
-    private Double assessmentAmount;
-    public String getBeforeRectificationPhotoJson() {
-        return beforeRectificationPhotoJson;
+
+    public String getAssessmentPerson() {
+        return assessmentPerson;
     }
 
-    public void setBeforeRectificationPhotoJson(String beforeRectificationPhotoJson) {
-        this.beforeRectificationPhotoJson = beforeRectificationPhotoJson;
-    }
-
-    public String getAfterRectificationPhotoJson() {
-        return afterRectificationPhotoJson;
-    }
-
-    public void setAfterRectificationPhotoJson(String afterRectificationPhotoJson) {
-        this.afterRectificationPhotoJson = afterRectificationPhotoJson;
+    public void setAssessmentPerson(String assessmentPerson) {
+        this.assessmentPerson = assessmentPerson;
     }
 
     public Long getId() {
@@ -80,19 +75,19 @@ public class Ledger {
         this.inspectionType = inspectionType;
     }
 
-    public LocalDate getCheckTime() {
+    public Date getCheckTime() {
         return checkTime;
     }
 
-    public void setCheckTime(LocalDate checkTime) {
+    public void setCheckTime(Date checkTime) {
         this.checkTime = checkTime;
     }
 
-    public LocalDate getRectificationDeadline() {
+    public Date getRectificationDeadline() {
         return rectificationDeadline;
     }
 
-    public void setRectificationDeadline(LocalDate rectificationDeadline) {
+    public void setRectificationDeadline(Date rectificationDeadline) {
         this.rectificationDeadline = rectificationDeadline;
     }
 
@@ -184,44 +179,44 @@ public class Ledger {
         this.issueMode = issueMode;
     }
 
-    public Double getlValue() {
+    public Integer getlValue() {
         return lValue;
     }
 
-    public void setlValue(Double lValue) {
+    public void setlValue(Integer lValue) {
         this.lValue = lValue;
     }
 
-    public Double geteValue() {
+    public Integer geteValue() {
         return eValue;
     }
 
-    public void seteValue(Double eValue) {
+    public void seteValue(Integer eValue) {
         this.eValue = eValue;
     }
 
-    public Double getcValue() {
+    public Integer getcValue() {
         return cValue;
     }
 
-    public void setcValue(Double cValue) {
+    public void setcValue(Integer cValue) {
         this.cValue = cValue;
     }
 
-    public Double getdValue() {
+    public Integer getdValue() {
         return dValue;
     }
 
-    public void setdValue(Double dValue) {
+    public void setdValue(Integer dValue) {
         this.dValue = dValue;
     }
 
-    public List<String> getBeforeRectificationPhoto() {
-        return beforeRectificationPhoto;
+    public String getBeforeRectificationPhotos() {
+        return beforeRectificationPhotos;
     }
 
-    public void setBeforeRectificationPhoto(List<String> beforeRectificationPhoto) {
-        this.beforeRectificationPhoto = beforeRectificationPhoto;
+    public void setBeforeRectificationPhotos(String beforeRectificationPhotos) {
+        this.beforeRectificationPhotos = beforeRectificationPhotos;
     }
 
     public String getIssueDescription() {
@@ -264,12 +259,12 @@ public class Ledger {
         this.inspector = inspector;
     }
 
-    public List<String> getAfterRectificationPhoto() {
-        return afterRectificationPhoto;
+    public String getAfterRectificationPhotos() {
+        return afterRectificationPhotos;
     }
 
-    public void setAfterRectificationPhoto(List<String> afterRectificationPhoto) {
-        this.afterRectificationPhoto = afterRectificationPhoto;
+    public void setAfterRectificationPhotos(String afterRectificationPhotos) {
+        this.afterRectificationPhotos = afterRectificationPhotos;
     }
 
     public String getAnalysisAndMeasures() {
@@ -280,30 +275,12 @@ public class Ledger {
         this.analysisAndMeasures = analysisAndMeasures;
     }
 
-    public LocalDate getRectificationFinishTime() {
+    public Date getRectificationFinishTime() {
         return rectificationFinishTime;
     }
 
-    public void setRectificationFinishTime(LocalDate rectificationFinishTime) {
+    public void setRectificationFinishTime(Date rectificationFinishTime) {
         this.rectificationFinishTime = rectificationFinishTime;
     }
 
-    public String getAssessmentPerson() {
-        return assessmentPerson;
-    }
-
-    public void setAssessmentPerson(String assessmentPerson) {
-        this.assessmentPerson = assessmentPerson;
-    }
-
-    public Double getAssessmentAmount() {
-        return assessmentAmount;
-    }
-
-    public void setAssessmentAmount(Double assessmentAmount) {
-        this.assessmentAmount = assessmentAmount;
-    }
-
-
-// Getters and Setters
 }

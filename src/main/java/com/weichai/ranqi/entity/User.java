@@ -3,21 +3,21 @@ package com.weichai.ranqi.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import org.springframework.core.annotation.Order;
 
-import java.util.List;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "user") // 对应数据库中的表名
 public class User {
-    @TableId(type = IdType.AUTO)
-    // 用户属性
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 与 MyBatis-Plus 的 @TableId 一致
+    @TableId(type = IdType.AUTO) // MyBatis-Plus 注解，兼容
     private Long id; // 用户唯一标识
     private String username; // 用户姓名
     private String password; // 用户密码
     private String phone; // 用户电话
     private String permissions; // 用户权限
 
-    @TableField(exist = false)
-    private List<Ledger> ledger;
     // 构造方法
     public User() {}
 

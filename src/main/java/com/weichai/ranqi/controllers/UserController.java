@@ -30,13 +30,22 @@ public class UserController {
     @PostMapping("/login")
     public Result login(@RequestBody User user){
         // 检查用户名和密码是否匹配
-        User dbUser = userService.getUserByUsername(user.getusername());
+        if (user.getPhone() == null || user.getPassword() == null) {
+            return Result.error().message("手机号或密码不能为空");
+        }
+
+        // 检查用户是否存在
+        User dbUser = userService.getUserByPhone(user.getPhone());
+        if (dbUser == null) {
+            return Result.error().message("用户不存在");
+        }
+
         if (dbUser == null || !dbUser.getPassword().equals(user.getPassword())) {
-            return Result.error().message("用户名或密码错误");
+            return Result.error().message("电话号或密码错误");
         }
 
         // 生成 token
-        String token = JwtUtils.generateToken(dbUser.getusername());
+        String token = JwtUtils.generateToken(dbUser.getPhone());
         return Result.ok().data("token", token);
     }
 
@@ -44,10 +53,10 @@ public class UserController {
     @GetMapping("/info")
     public Result info(String token) {
         // 从 token 中解析用户名
-        String username = JwtUtils.getClaimsByToken(token).getSubject();
+        String phone = JwtUtils.getClaimsByToken(token).getSubject();
 
         // 获取用户信息
-        User user = userService.getUserByUsername(username);
+        User user = userService.getUserByPhone(phone);
         if (user == null) {
             return Result.error().message("用户不存在");
         }
@@ -60,7 +69,7 @@ public class UserController {
 
         // 返回结果
         return Result.ok()
-                .data("name", username)
+                .data("phone", phone)
                 .data("avatar", url)
                 .data("roles", roles); // 添加 roles 字段
     }
@@ -116,6 +125,28 @@ public class UserController {
             return new ResponseEntity<>("用户更新失败，用户ID可能不存在", HttpStatus.NOT_FOUND);  // 404
         }
         return new ResponseEntity<>("用户更新成功！", HttpStatus.OK);
+    }
+
+    @ApiOperation("根据关键字模糊查询用户")
+    @GetMapping("/search")
+    public ResponseEntity<List<Map<String, Object>>> searchUsers(@RequestParam String query) {
+        // 调用 UserService 的方法查询匹配的用户
+        List<User> users = userService.searchUsersByUsername(query);
+
+        System.out.println("Received search query: " + query); // 打印日志
+//        if (users == null || users.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 未找到用户
+//        }
+        // 只返回必要的字段，如 ID 和用户名
+        List<Map<String, Object>> results = new ArrayList<>();
+        for (User user : users) {
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("phone", user.getPhone());
+            userMap.put("name", user.getusername());
+            results.add(userMap);
+        }
+//        System.out.println("Search results: " + users); // 打印结果
+        return new ResponseEntity<>(results, HttpStatus.OK); // 返回匹配的用户
     }
 
     @ApiOperation("删除用户")

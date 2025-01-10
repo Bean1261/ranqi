@@ -2,6 +2,7 @@ package com.weichai.ranqi.service.impl;
 
 import com.weichai.ranqi.entity.User;
 import com.weichai.ranqi.mapper.UserMapper;
+import com.weichai.ranqi.repository.UserRepository;
 import com.weichai.ranqi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,17 @@ public class UserServiceImpl implements UserService {
         return null; // 如果都未找到，返回 null
     }
 
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public List<User> searchUsersByUsername(String query) {
+        // 调用 Repository 层的查询方法
+        return userRepository.findByUsernameContaining(query);
+    }
+
+
     @Override
     public void addUser(User user) {
         // 插入用户到数据库
@@ -63,6 +75,11 @@ public class UserServiceImpl implements UserService {
             return false;  // 用户不存在
         }
         return userMapper.deleteUserById(id) > 0;  // 删除成功返回 true
+    }
+
+    @Override
+    public User getUserByPhone(String phone) {
+        return userMapper.getUserByPhone(phone);
     }
 
 
